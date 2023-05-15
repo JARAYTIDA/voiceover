@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    Select Voice <select name="" id="voiceSelect"></select>
+    <br>
+    <br>
+    <input type="text" name="" id="textT">
+    <br>
+    <br>
+    <button id="speak">Speak</button>
+
+    <script>
+
+        var voiceList = document.querySelector('#voiceSelect');
+        var txt = document.querySelector('#textT');
+        var speakT = document.querySelector('#speak');
+
+        // var textToSpeech = ;
+        var voices = [];
+
+        GetVoices();
+
+        if(speechSynthesis !== undefined){
+            speechSynthesis.onvoiceschanged = GetVoices;
+        }
+
+        speakT.addEventListener('click', ()=>{
+            var toSpeak = new SpeechSynthesisUtterance(txt.value);
+            var selectedVoiceName = voiceList.selectedOptions[0].getAttribute('data-name');
+            
+            voices.forEach((voice)=>{
+                if(voice.name === selectedVoiceName){
+                    toSpeak.voice = voice;
+                }
+            });
+
+            window.speechSynthesis.cancel();
+            window.speechSynthesis.speak(toSpeak); 
+        })
+
+        function GetVoices() {
+            voices = window.speechSynthesis.getVoices();
+            voiceList.innerHTML = '';
+
+            voices.forEach((voice) =>{
+                var listItem = documet.createElement('option');
+                listItem.textContent = voice.name;
+                listItem.setAttribute('data-lang', voice.lang);
+                listItem.setAttribute('data-name', voice.name);
+                voices.appendChild(listItem);
+            });
+
+            voiceList.selectedIndex = 0;
+        }
+
+    </script>
+</body>
+</html>
